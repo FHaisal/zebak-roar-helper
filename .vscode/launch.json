@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch ExamplePluginTest",
+            "request": "launch",
+            "mainClass": "com.example.ExamplePluginTest",
+            "vmArgs": "-ea",
+            "args": "--developer-mode",
+            "projectName": "example-plugin"
+        }
+    ]
+}
