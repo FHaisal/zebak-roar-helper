@@ -3,12 +3,12 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch ExamplePluginTest",
+            "name": "Launch ZebakRoarPluginTest",
             "request": "launch",
-            "mainClass": "com.example.ExamplePluginTest",
+            "mainClass": "com.zebakroarhelper.ZebakRoarPluginTest",
             "vmArgs": "-ea",
             "args": "--developer-mode",
-            "projectName": "example-plugin"
+            "projectName": "zebak-roar-helper"
         }
     ]
 }

@@ -138,16 +138,14 @@ public class ZebakRoarPlugin extends Plugin
 		if (npc.getName() != null && npc.getName().equals("Zebak"))
 		{
 			int anim = npc.getAnimation();
-			if (anim == ZEBAK_MAGIC_ATTACK || anim == ZEBAK_RANGED_ATTACK)
+			log.debug("Zebak Animation: {}", anim);
+			
+			if (anim == ZEBAK_GREAT_ROAR_ANIMATION)
 			{
 				if (inRoarPhase)
 				{
 					zebakAttackCount++;
 				}
-			}
-			else if (anim == ZEBAK_GREAT_ROAR_ANIMATION)
-			{
-				zebakAttackCount = 4;
 			}
 		}
 	}

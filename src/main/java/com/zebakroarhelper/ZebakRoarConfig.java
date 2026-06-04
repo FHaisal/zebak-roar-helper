@@ -6,6 +6,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Range;
 
 @ConfigGroup("zebakroar")
 public interface ZebakRoarConfig extends Config
@@ -103,6 +104,19 @@ public interface ZebakRoarConfig extends Config
 		return new Color(255, 0, 0, 255);
 	}
 
+	@Range(min = 1, max = 4)
+	@ConfigItem(
+		keyName = "flashThreshold",
+		name = "Flash Threshold",
+		description = "Number of attacks remaining when the timer background starts flashing",
+		position = 7,
+		section = zebakRoarSection
+	)
+	default int flashThreshold()
+	{
+		return 2;
+	}
+
 	@ConfigItem(
 		keyName = "showRollingTrueTile",
 		name = "Show Rolling Jug True Tile",
@@ -139,6 +153,43 @@ public interface ZebakRoarConfig extends Config
 	default Color attackJugColor()
 	{
 		return new Color(144, 0, 255, 255);
+	}
+
+	@ConfigItem(
+		keyName = "upsetStomach",
+		name = "Upset Stomach",
+		description = "Toggle if the Upset Stomach invocation is active (reduces jug splash from 5x5 to 3x3)",
+		position = 11,
+		section = zebakRoarSection
+	)
+	default boolean upsetStomach()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "showPushToHit",
+		name = "Show Push-to-Hit Tactics",
+		description = "Show cyan paths for jugs that can be pushed and then attacked mid-roll to clear a safe spot",
+		position = 12,
+		section = zebakRoarSection
+	)
+	default boolean showPushToHit()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "cyanHighlightColor",
+		name = "Push-to-Hit Color",
+		description = "Color of the push-to-hit stance tile and path",
+		position = 13,
+		section = zebakRoarSection
+	)
+	default Color cyanHighlightColor()
+	{
+		return new Color(0, 255, 255, 255);
 	}
 
 	public enum JugHighlightMode

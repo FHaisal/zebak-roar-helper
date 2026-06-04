@@ -47,10 +47,10 @@ public class ZebakRoarTimerOverlay extends OverlayPanel
 		panelComponent.getChildren().add(LineComponent.builder()
 			.left("Zebak Attacks until Roar:")
 			.right(String.valueOf(attacksLeft))
-			.rightColor(attacksLeft <= 1 ? Color.RED : Color.WHITE)
+			.rightColor(attacksLeft <= config.flashThreshold() ? Color.RED : Color.WHITE)
 			.build());
 
-		if (config.flashTimer() && attacksLeft <= 1 && (System.currentTimeMillis() % 1000) < 500) {
+		if (config.flashTimer() && attacksLeft <= config.flashThreshold() && (System.currentTimeMillis() % 1000) < 500) {
 			panelComponent.setBackgroundColor(config.timerFlashColor());
 		} else {
 			panelComponent.setBackgroundColor(ComponentConstants.STANDARD_BACKGROUND_COLOR);
