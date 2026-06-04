@@ -4,7 +4,7 @@ A RuneLite plugin that provides visual assistance during Zebak's Great Roar atta
 
 <p align="center">
   <!-- GitHub Video Placeholder. Upload your video to a GitHub Issue/PR and paste the URL here: -->
-  <video src="YOUR_GITHUB_VIDEO_URL_HERE.mp4" controls="controls" muted="muted" width="800">
+  <video src="https://github.com/user-attachments/assets/2c29a35c-d20d-4518-8d4c-21c029e37dfd" controls="controls" muted="muted" width="800">
     Your browser does not support the video tag.
   </video>
 </p>
