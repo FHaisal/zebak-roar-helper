@@ -165,7 +165,7 @@ public interface ZebakRoarConfig extends Config
 	)
 	default Color rollingTrueTileColor()
 	{
-		return new Color(0, 255, 255, 150);
+		return new Color(255, 231, 0, 255);
 	}
 
 	@ConfigItem(

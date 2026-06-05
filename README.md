@@ -1,36 +1,30 @@
 # Zebak Roar Helper
 
-A RuneLite plugin that provides visual assistance during Zebak's Great Roar attack in the Tombs of Amascut.
+A RuneLite plugin that provides non-intrusive visual assistance during Zebak's Great Roar attack in the Tombs of Amascut.
 
 <p align="center">
-  <!-- GitHub Video Placeholder. Upload your video to a GitHub Issue/PR and paste the URL here: -->
-  <video src="https://github.com/user-attachments/assets/2c29a35c-d20d-4518-8d4c-21c029e37dfd" controls="controls" muted="muted" width="800">
+  <video src="https://github.com/user-attachments/assets/0c86def4-9bea-4891-a7a6-5b7acbad8093" controls="controls" muted="muted" width="800">
     Your browser does not support the video tag.
   </video>
 </p>
 
 ## Features
 
-- **Dual-Strategy Jug Highlighting**: Intelligently highlights valid jugs on the floor to help you instantly choose the fastest path to safety.
-  - **Standard Push Tactic (Green/Yellow/Red)**: Highlights jugs that naturally align with rocks, indicating which ones should be pushed straight into a rock.
-  - **Push-to-Hit Tactic (Cyan)**: Highlights jugs that don't directly hit a rock but will roll past the splash radius of a safe spot, telling you to push the jug and attack it mid-roll.
-- **Jug Highlighting Modes**:
-  - **Optimal Mode**: Calculates and highlights the absolute best single jug to interact with (and additionally shows the best Push-to-Hit jug if one exists).
-  - **Nearest Mode**: Highlights the jug closest to the player that has a valid tactic.
-  - **All Mode**: Displays all possible paths for all valid jugs.
-- **Dynamic Attack Mode**: If a jug is already currently sitting in a safe spot, its 3D model turns purple to indicate it can be attacked immediately.
-- **Stance & Path Indication**: Displays the exact stance tile you need to stand on to push the jug in the correct direction, and maps out the exact trajectory of the jug up to the rock.
+- **Dynamic Jug Highlighting**: Intelligently highlights valid jugs via their 3D hull to help you choose the fastest path to safety without cluttering the floor.
+  - **Push Tactic (Purple)**: Highlights jugs that naturally align with rocks, indicating which ones should be pushed straight into a rock.
+  - **Push-to-Hit Tactic (Cyan)**: Highlights jugs that don't directly hit a rock but will roll past the splash radius of a safe spot, allowing you to attack it mid-roll.
+  - **Hit-Only Tactic (Orange)**: Highlights jugs that are already in a position where hitting them will clear a safe spot.
+- **Tactical Priority Engine**: If a jug satisfies multiple conditions, the plugin evaluates your distance to the jug and any acid in the way to recommend the most efficient action.
 - **Roar Countdown Timer**: Adds a flashing UI countdown timer tracking exactly how many attacks Zebak will perform before executing the Great Roar damage.
-- **Safe Zone Rendering**: Actively evaluates acid pools and perfectly highlights the safe tiles behind rocks so you know exactly where to stand.
 - **Rolling True Tile**: Maps the server true tile of a moving jug, making it easier to time your attacks on moving jugs.
 
 ## Configuration
 
-All colors, visual elements, and modes are fully customizable via the plugin configuration menu. 
+All colors and tactics are fully customizable via the plugin configuration menu.
 
+- **Tactic Toggles**: Individually enable or disable the Hit-Only, Push, and Push-to-Hit highlights, and customize their colors.
 - **Upset Stomach Toggle**: Recalculates the splash radius and valid safe zones based on whether the Upset Stomach invocation is active (3x3 vs 5x5).
 - **Flash Threshold**: Customizes exactly when the countdown timer will flash red to warn you to move to a safe zone.
-- **Show Push-to-Hit Tactics**: Toggles the secondary Cyan strategy layer.
 
 ## Support
 
