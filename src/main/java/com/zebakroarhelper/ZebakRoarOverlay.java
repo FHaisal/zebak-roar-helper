@@ -70,6 +70,8 @@ public class ZebakRoarOverlay extends Overlay
 
 				int splashRadius = config.upsetStomach() ? 1 : 2;
 
+				WorldPoint playerLocation = localPlayer.getWorldLocation();
+
 				for (NPC jug : jugs)
 				{
 					if (jug.getId() == 11736) // ROLLING_JUG_ID
@@ -78,67 +80,117 @@ public class ZebakRoarOverlay extends Overlay
 					}
 
 					WorldPoint jugLoc = jug.getWorldLocation();
-					boolean handled = false;
+					boolean isHitOnly = false;
+					boolean isPush = false;
+					boolean isPushToHit = false;
 
-					// 1. Scenario 3: Hit Only
-					if (config.showHitOnly() && !handled)
+					// Evaluate Hit Only condition
+					for (NPC rock : rocks)
 					{
-						boolean hitOnly = false;
-						for (NPC rock : rocks)
+						WorldPoint rockLoc = rock.getWorldLocation();
+						if (jugLoc.distanceTo(rockLoc.dx(1)) <= splashRadius ||
+							jugLoc.distanceTo(rockLoc.dx(2)) <= splashRadius ||
+							jugLoc.distanceTo(rockLoc.dx(3)) <= splashRadius)
 						{
-							WorldPoint rockLoc = rock.getWorldLocation();
-							if (jugLoc.distanceTo(rockLoc.dx(1)) <= splashRadius ||
-								jugLoc.distanceTo(rockLoc.dx(2)) <= splashRadius ||
-								jugLoc.distanceTo(rockLoc.dx(3)) <= splashRadius)
-							{
-								hitOnly = true;
-								break;
-							}
-						}
-
-						if (hitOnly)
-						{
-							java.awt.Shape hull = jug.getConvexHull();
-							if (hull != null)
-							{
-								OverlayUtil.renderPolygon(graphics, hull, config.hitOnlyColor());
-							}
-							handled = true;
+							isHitOnly = true;
+							break;
 						}
 					}
 
-					// 2. Scenario 1: Push
-					if (config.showPush() && !handled)
+					// Evaluate Push condition
+					for (NPC rock : rocks)
 					{
-						boolean canPush = false;
-						for (NPC rock : rocks)
+						WorldPoint rockLoc = rock.getWorldLocation();
+						int dx = Math.abs(jugLoc.getX() - rockLoc.getX());
+						int dy = Math.abs(jugLoc.getY() - rockLoc.getY());
+						
+						if (dx == 0 || dy == 0 || dx == dy)
 						{
-							WorldPoint rockLoc = rock.getWorldLocation();
-							int dx = Math.abs(jugLoc.getX() - rockLoc.getX());
-							int dy = Math.abs(jugLoc.getY() - rockLoc.getY());
+							isPush = true;
+							break;
+						}
+					}
+
+					boolean rendered = false;
+
+					if (isHitOnly && isPush)
+					{
+						int distToPlayer = jugLoc.distanceTo(playerLocation);
+						boolean hasAcid = false;
+						
+						if (distToPlayer <= 2)
+						{
+							int minX = Math.min(jugLoc.getX(), playerLocation.getX());
+							int maxX = Math.max(jugLoc.getX(), playerLocation.getX());
+							int minY = Math.min(jugLoc.getY(), playerLocation.getY());
+							int maxY = Math.max(jugLoc.getY(), playerLocation.getY());
 							
-							if (dx == 0 || dy == 0 || dx == dy)
+							for (int x = minX; x <= maxX; x++)
 							{
-								canPush = true;
-								break;
+								for (int y = minY; y <= maxY; y++)
+								{
+									if (x == playerLocation.getX() && y == playerLocation.getY()) continue;
+									if (x == jugLoc.getX() && y == jugLoc.getY()) continue;
+									
+									WorldPoint p = new WorldPoint(x, y, jugLoc.getPlane());
+									if (plugin.getActiveAcid().contains(p))
+									{
+										hasAcid = true;
+										break;
+									}
+								}
+								if (hasAcid) break;
 							}
 						}
 
-						if (canPush)
+						if (distToPlayer <= 2 && !hasAcid)
 						{
-							java.awt.Shape hull = jug.getConvexHull();
-							if (hull != null)
+							if (config.showPush())
 							{
-								OverlayUtil.renderPolygon(graphics, hull, config.pushColor());
+								java.awt.Shape hull = jug.getConvexHull();
+								if (hull != null)
+								{
+									OverlayUtil.renderPolygon(graphics, hull, config.pushColor());
+								}
+								rendered = true;
 							}
-							handled = true;
+						}
+						else
+						{
+							if (config.showHitOnly())
+							{
+								java.awt.Shape hull = jug.getConvexHull();
+								if (hull != null)
+								{
+									OverlayUtil.renderPolygon(graphics, hull, config.hitOnlyColor());
+								}
+								rendered = true;
+							}
 						}
 					}
 
-					// 3. Scenario 2: Push and Hit
-					if (config.showPushToHit() && !handled)
+					if (!rendered && isPush && config.showPush())
 					{
-						boolean canPushToHit = false;
+						java.awt.Shape hull = jug.getConvexHull();
+						if (hull != null)
+						{
+							OverlayUtil.renderPolygon(graphics, hull, config.pushColor());
+						}
+						rendered = true;
+					}
+
+					if (!rendered && isHitOnly && config.showHitOnly())
+					{
+						java.awt.Shape hull = jug.getConvexHull();
+						if (hull != null)
+						{
+							OverlayUtil.renderPolygon(graphics, hull, config.hitOnlyColor());
+						}
+						rendered = true;
+					}
+
+					if (!rendered && config.showPushToHit())
+					{
 						int[] dxs = {0, 0, -1, 1, -1, 1, -1, 1};
 						int[] dys = {1, -1, 0, 0, 1, 1, -1, -1};
 						
@@ -161,21 +213,21 @@ public class ZebakRoarOverlay extends Overlay
 								}
 								if (hit)
 								{
-									canPushToHit = true;
+									isPushToHit = true;
 									break;
 								}
 							}
-							if (canPushToHit) break;
+							if (isPushToHit) break;
 						}
 
-						if (canPushToHit)
+						if (isPushToHit)
 						{
 							java.awt.Shape hull = jug.getConvexHull();
 							if (hull != null)
 							{
 								OverlayUtil.renderPolygon(graphics, hull, config.pushToHitColor());
 							}
-							handled = true;
+							rendered = true;
 						}
 					}
 				}
