@@ -19,22 +19,85 @@ public interface ZebakRoarConfig extends Config
 	String zebakRoarSection = "zebakRoar";
 
 	@ConfigItem(
-		keyName = "jugMode",
-		name = "Jug Highlight Mode",
-		description = "Configure which jugs to highlight:\nNEAREST: Absolute closest jug to the player.\nOPTIMAL: Best jug that clears the most rocks.\nALL: Highlights and draws paths for all valid jugs.",
+		keyName = "showHitOnly",
+		name = "Show Hit-Only Tactics",
+		description = "Show orange highlight on jugs whose splash radius already covers a safe zone",
 		position = 1,
 		section = zebakRoarSection
 	)
-	default JugHighlightMode jugMode()
+	default boolean showHitOnly()
 	{
-		return JugHighlightMode.OPTIMAL;
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "hitOnlyColor",
+		name = "Hit-Only Jug Color",
+		description = "Color to highlight jugs that are already in a safe zone",
+		position = 2,
+		section = zebakRoarSection
+	)
+	default Color hitOnlyColor()
+	{
+		return new Color(255, 128, 0, 255); // Orange
+	}
+
+	@ConfigItem(
+		keyName = "showPush",
+		name = "Show Push Tactics",
+		description = "Show purple highlight on jugs that can be pushed straight to a rock",
+		position = 3,
+		section = zebakRoarSection
+	)
+	default boolean showPush()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "pushColor",
+		name = "Push Jug Color",
+		description = "Color to highlight jugs that align with a rock",
+		position = 4,
+		section = zebakRoarSection
+	)
+	default Color pushColor()
+	{
+		return new Color(144, 0, 255, 255); // Purple
+	}
+
+	@ConfigItem(
+		keyName = "showPushToHit",
+		name = "Show Push-to-Hit Tactics",
+		description = "Show cyan highlight on jugs that can be pushed and then attacked mid-roll",
+		position = 5,
+		section = zebakRoarSection
+	)
+	default boolean showPushToHit()
+	{
+		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "pushToHitColor",
+		name = "Push-to-Hit Color",
+		description = "Color to highlight jugs that can be pushed past a safe zone",
+		position = 6,
+		section = zebakRoarSection
+	)
+	default Color pushToHitColor()
+	{
+		return new Color(0, 255, 255, 255); // Cyan
 	}
 
 	@ConfigItem(
 		keyName = "timerMode",
 		name = "Timer Mode",
 		description = "Configure when the attack countdown timer shows",
-		position = 2,
+		position = 7,
 		section = zebakRoarSection
 	)
 	default TimerMode timerMode()
@@ -42,37 +105,11 @@ public interface ZebakRoarConfig extends Config
 		return TimerMode.IN_ROAR_PHASE;
 	}
 
-	@Alpha
-	@ConfigItem(
-		keyName = "pushableJugColor",
-		name = "Pushable Jug Color",
-		description = "Color to highlight the jug model when it should be pushed to a rock",
-		position = 3,
-		section = zebakRoarSection
-	)
-	default Color pushableJugColor()
-	{
-		return new Color(144, 0, 255, 255); // Purple
-	}
-
-	@Alpha
-	@ConfigItem(
-		keyName = "attackableJugColor",
-		name = "Attackable Jug Color",
-		description = "Color to highlight the jug model when it can be attacked to clear a safe spot (Cyan Tactic)",
-		position = 4,
-		section = zebakRoarSection
-	)
-	default Color attackableJugColor()
-	{
-		return new Color(0, 255, 255, 255); // Cyan
-	}
-
 	@ConfigItem(
 		keyName = "flashTimer",
 		name = "Flash Timer UI",
 		description = "Flash the timer UI panel when attacks remaining hit the threshold",
-		position = 6,
+		position = 8,
 		section = zebakRoarSection
 	)
 	default boolean flashTimer()
@@ -85,7 +122,7 @@ public interface ZebakRoarConfig extends Config
 		keyName = "timerFlashColor",
 		name = "Timer Flash Color",
 		description = "Color the timer flashes",
-		position = 7,
+		position = 9,
 		section = zebakRoarSection
 	)
 	default Color timerFlashColor()
@@ -98,7 +135,7 @@ public interface ZebakRoarConfig extends Config
 		keyName = "flashThreshold",
 		name = "Flash Threshold",
 		description = "Number of attacks remaining when the timer background starts flashing",
-		position = 8,
+		position = 10,
 		section = zebakRoarSection
 	)
 	default int flashThreshold()
@@ -110,7 +147,7 @@ public interface ZebakRoarConfig extends Config
 		keyName = "showRollingTrueTile",
 		name = "Show Rolling Jug True Tile",
 		description = "Highlight the server true tile of moving jugs to time attacks",
-		position = 9,
+		position = 11,
 		section = zebakRoarSection
 	)
 	default boolean showRollingTrueTile()
@@ -123,7 +160,7 @@ public interface ZebakRoarConfig extends Config
 		keyName = "rollingTrueTileColor",
 		name = "Rolling Jug True Tile Color",
 		description = "Color of the moving jug true tile",
-		position = 10,
+		position = 12,
 		section = zebakRoarSection
 	)
 	default Color rollingTrueTileColor()
@@ -135,29 +172,12 @@ public interface ZebakRoarConfig extends Config
 		keyName = "upsetStomach",
 		name = "Upset Stomach",
 		description = "Toggle if the Upset Stomach invocation is active (reduces jug splash from 5x5 to 3x3)",
-		position = 11,
+		position = 13,
 		section = zebakRoarSection
 	)
 	default boolean upsetStomach()
 	{
 		return false;
-	}
-
-	@ConfigItem(
-		keyName = "showPushToHit",
-		name = "Show Push-to-Hit Tactics",
-		description = "Show cyan highlight on jugs that can be pushed and then attacked mid-roll",
-		position = 12,
-		section = zebakRoarSection
-	)
-	default boolean showPushToHit()
-	{
-		return true;
-	}
-
-	public enum JugHighlightMode
-	{
-		NEAREST, OPTIMAL, ALL
 	}
 
 	public enum TimerMode
