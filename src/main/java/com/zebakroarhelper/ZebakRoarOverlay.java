@@ -139,10 +139,10 @@ public class ZebakRoarOverlay extends Overlay
 					if (config.showPushToHit() && !handled)
 					{
 						boolean canPushToHit = false;
-						int[] dxs = {0, 0, -1, 1};
-						int[] dys = {1, -1, 0, 0};
+						int[] dxs = {0, 0, -1, 1, -1, 1, -1, 1};
+						int[] dys = {1, -1, 0, 0, 1, 1, -1, -1};
 						
-						for (int d = 0; d < 4; d++)
+						for (int d = 0; d < 8; d++)
 						{
 							for (int step = 1; step <= 25; step++)
 							{
