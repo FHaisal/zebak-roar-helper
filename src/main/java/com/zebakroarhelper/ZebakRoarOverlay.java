@@ -271,7 +271,7 @@ public class ZebakRoarOverlay extends Overlay
 						java.awt.Shape hull = jug.getConvexHull();
 						if (hull != null)
 						{
-							OverlayUtil.renderPolygon(graphics, hull, config.attackJugColor());
+							OverlayUtil.renderPolygon(graphics, hull, config.attackableJugColor());
 						}
 					}
 
@@ -293,50 +293,14 @@ public class ZebakRoarOverlay extends Overlay
 					{
 						int cDx = cyanDx[i];
 						int cDy = cyanDy[i];
-						int cDist = cyanDist[i];
 						
-						WorldPoint stanceTile = jugLoc.dx(-cDx).dy(-cDy);
-						
-						LocalPoint stanceLocal = LocalPoint.fromWorld(client, stanceTile);
-						if (stanceLocal != null)
+						java.awt.Shape hull = jug.getConvexHull();
+						if (hull != null)
 						{
-							Polygon stancePoly = Perspective.getCanvasTilePoly(client, stanceLocal);
-							if (stancePoly != null)
-							{
-								OverlayUtil.renderPolygon(graphics, stancePoly, config.cyanHighlightColor());
-							}
+							OverlayUtil.renderPolygon(graphics, hull, config.attackableJugColor());
 						}
 						
-						LocalPoint jugLocal = jug.getLocalLocation();
-						if (jugLocal != null)
-						{
-							Polygon tilePolygon = Perspective.getCanvasTilePoly(client, jugLocal);
-							if (tilePolygon != null)
-							{
-								OverlayUtil.renderPolygon(graphics, tilePolygon, config.cyanHighlightColor());
-							}
-						}
-						
-						for (int step = 1; step <= cDist; step++)
-						{
-							WorldPoint pathTile = jugLoc.dx(cDx * step).dy(cDy * step);
-							LocalPoint pathLocal = LocalPoint.fromWorld(client, pathTile);
-							if (pathLocal != null)
-							{
-								Polygon pathPoly = Perspective.getCanvasTilePoly(client, pathLocal);
-								if (pathPoly != null)
-								{
-									if (step == cDist)
-									{
-										OverlayUtil.renderPolygon(graphics, pathPoly, config.attackJugColor());
-									}
-									else
-									{
-										OverlayUtil.renderPolygon(graphics, pathPoly, new Color(0, 255, 255, 30));
-									}
-								}
-							}
-						}
+						renderDirectionLine(graphics, jug, cDx, cDy, config.attackableJugColor());
 					}
 
 					// Render Standard Push
@@ -345,108 +309,48 @@ public class ZebakRoarOverlay extends Overlay
 						WorldPoint rockLoc = targetRock.getWorldLocation();
 						int dx = Integer.compare(rockLoc.getX(), jugLoc.getX());
 						int dy = Integer.compare(rockLoc.getY(), jugLoc.getY());
-						WorldPoint stanceTile = jugLoc.dx(-dx).dy(-dy);
 						
-						Color highlightColor = isPrimaryPush ? Color.GREEN : (score == 0 ? Color.RED : Color.YELLOW);
-
-						LocalPoint jugLocal = jug.getLocalLocation();
-						if (jugLocal != null)
+						java.awt.Shape hull = jug.getConvexHull();
+						if (hull != null)
 						{
-							Polygon tilePolygon = Perspective.getCanvasTilePoly(client, jugLocal);
-							if (tilePolygon != null)
-							{
-								OverlayUtil.renderPolygon(graphics, tilePolygon, highlightColor);
-							}
+							OverlayUtil.renderPolygon(graphics, hull, config.pushableJugColor());
 						}
-
-						LocalPoint stanceLocal = LocalPoint.fromWorld(client, stanceTile);
-						if (stanceLocal != null)
-						{
-							Polygon stancePoly = Perspective.getCanvasTilePoly(client, stanceLocal);
-							if (stancePoly != null)
-							{
-								OverlayUtil.renderPolygon(graphics, stancePoly, config.stanceTileColor());
-							}
-						}
-
-						int distanceToRock = Math.max(Math.abs(rockLoc.getX() - jugLoc.getX()), Math.abs(rockLoc.getY() - jugLoc.getY()));
-						for (int step = 1; step < distanceToRock; step++)
-						{
-							WorldPoint pathTile = jugLoc.dx(dx * step).dy(dy * step);
-							LocalPoint pathLocal = LocalPoint.fromWorld(client, pathTile);
-							if (pathLocal != null)
-							{
-								Polygon pathPoly = Perspective.getCanvasTilePoly(client, pathLocal);
-								if (pathPoly != null)
-								{
-									OverlayUtil.renderPolygon(graphics, pathPoly, new Color(0, 255, 0, 30));
-								}
-							}
-						}
+						
+						renderDirectionLine(graphics, jug, dx, dy, config.pushableJugColor());
 					}
 					else if ((jugMode == ZebakRoarConfig.JugHighlightMode.ALL || isPrimaryPush) && targetRock == null && primaryCyanJug == null)
 					{
-						int dx = -1;
-						int dy = 0;
-						WorldPoint stanceTile = jugLoc.dx(-dx).dy(-dy);
-						
-						LocalPoint jugLocal = jug.getLocalLocation();
-						if (jugLocal != null)
+						java.awt.Shape hull = jug.getConvexHull();
+						if (hull != null)
 						{
-							Polygon tilePolygon = Perspective.getCanvasTilePoly(client, jugLocal);
-							if (tilePolygon != null)
-							{
-								OverlayUtil.renderPolygon(graphics, tilePolygon, Color.RED);
-							}
-						}
-
-						LocalPoint stanceLocal = LocalPoint.fromWorld(client, stanceTile);
-						if (stanceLocal != null)
-						{
-							Polygon stancePoly = Perspective.getCanvasTilePoly(client, stanceLocal);
-							if (stancePoly != null)
-							{
-								OverlayUtil.renderPolygon(graphics, stancePoly, config.stanceTileColor());
-							}
+							OverlayUtil.renderPolygon(graphics, hull, Color.RED);
 						}
 					}
 				}
 			}
 		}
 
-		if (!rocks.isEmpty() && config.showSafeZone())
-		{
-			// Render safe zone behind rocks
-			for (NPC rock : rocks)
-			{
-				WorldPoint rockLocation = rock.getWorldLocation();
-				
-				// NOTE: Since Zebak is always on the West side of the arena, the safe tiles are 
-				// expected to be directly East (positive X) of the rocks. 
-				// You may still need to adjust these offsets based on exact in-game mechanics.
-				renderSafeTile(graphics, rockLocation.dx(1));
-				renderSafeTile(graphics, rockLocation.dx(2));
-				renderSafeTile(graphics, rockLocation.dx(3));
-			}
-		}
-
 		return null;
 	}
 
-	private void renderSafeTile(Graphics2D graphics, WorldPoint worldPoint)
+	private void renderDirectionLine(Graphics2D graphics, NPC jug, int dx, int dy, Color color)
 	{
-		if (plugin.getActiveAcid().contains(worldPoint))
-		{
-			return;
-		}
+		WorldPoint center = jug.getWorldLocation();
+		WorldPoint target = center.dx(dx).dy(dy);
 
-		LocalPoint localPoint = LocalPoint.fromWorld(client, worldPoint);
-		if (localPoint != null)
+		LocalPoint centerLocal = LocalPoint.fromWorld(client, center);
+		LocalPoint targetLocal = LocalPoint.fromWorld(client, target);
+
+		if (centerLocal != null && targetLocal != null)
 		{
-			Polygon poly = Perspective.getCanvasTilePoly(client, localPoint);
-			if (poly != null)
+			net.runelite.api.Point p1 = Perspective.localToCanvas(client, centerLocal, client.getPlane(), jug.getLogicalHeight() / 2);
+			net.runelite.api.Point p2 = Perspective.localToCanvas(client, targetLocal, client.getPlane(), jug.getLogicalHeight() / 2);
+
+			if (p1 != null && p2 != null)
 			{
-				OverlayUtil.renderPolygon(graphics, poly, config.safeZoneColor());
+				graphics.setColor(color);
+				graphics.setStroke(new java.awt.BasicStroke(3));
+				graphics.drawLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 			}
 		}
 	}
